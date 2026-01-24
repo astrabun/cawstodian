@@ -1,4 +1,4 @@
-import {Client, GatewayIntentBits, GuildMember} from 'discord.js';
+import {Client, GatewayIntentBits, type Guild} from 'discord.js';
 import {env} from './env.js';
 import {commands} from './commands/index.js';
 import {deployCommands} from './deploy-commands.js';
@@ -15,7 +15,9 @@ const client = new Client({
 	],
 });
 
-client.once('clientReady', () => {
+client.once('clientReady', async () => {
+	const guilds = [...client.guilds.cache.values()] as Guild[];
+	await Promise.all(guilds.map(async guild => deployCommands({guildId: guild.id})));
 	console.log('Discord bot is ready! 🤖');
 });
 
