@@ -1,0 +1,10 @@
+services:
+  bot:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: bot
+    image: cawstodian:latest
+    env_file:
+      - .env
+    restart: unless-stopped
