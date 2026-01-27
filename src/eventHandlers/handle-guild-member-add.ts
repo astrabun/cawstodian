@@ -1,4 +1,4 @@
-import {type DMChannel, type GuildMember, type Attachment} from 'discord.js';
+import {type DMChannel, type GuildMember} from 'discord.js';
 
 const numbersToAdd = [
 	'num_1.png',
