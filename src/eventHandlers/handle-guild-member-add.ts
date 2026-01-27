@@ -44,7 +44,7 @@ const generateMathChallenge = (): {question: string; answer: number; a: number; 
 const handleGuildMemberAdd = async (member: GuildMember) => {
 	console.log(`[JOIN]: ${member.toString()}`);
 
-	const {question, answer, a, b} = generateMathChallenge();
+	const {answer, a, b} = generateMathChallenge();
 	let channel: any;
 
 	try {
@@ -56,7 +56,7 @@ To verify your membership, please answer the following math problem within 5 min
 ${question}`); */
 		await (channel as DMChannel).send({
 			content: `Hello ${member.displayName}! Thanks for joining ${member.guild.name}.
-To verify your membership, please answer a math problem within 5 minutes. What is the sum (addition) of the two numbers contained in the images?`,
+To verify your membership, please answer a math problem within 5 minutes to avoid removal. What is the sum (addition) of the two numbers contained in the images?`,
 			files: [
 				{attachment: numbersToAdd[a - 1]!, name: 'first_number.png'},
 				{attachment: numbersToAdd[b - 1]!, name: 'second_number.png'},
@@ -67,8 +67,13 @@ To verify your membership, please answer a math problem within 5 minutes. What i
 		const {systemChannel} = member.guild;
 		if (systemChannel) {
 			channel = systemChannel;
-			await systemChannel.send(`<@${member.id}>, I couldn't DM you. Please answer the following math problem within 5 minutes to avoid removal:
-${question}`);
+			await systemChannel.send({
+				content: `<@${member.id}>, I couldn't DM you. answer a math problem within 5 minutes to avoid removal. What is the sum (addition) of the two numbers contained in the images?`,
+				files: [
+					{attachment: numbersToAdd[a - 1]!, name: 'first_number.png'},
+					{attachment: numbersToAdd[b - 1]!, name: 'second_number.png'},
+				],
+			});
 		} else {
 			try {
 				await member.kick('Failed verification: unable to DM member');
