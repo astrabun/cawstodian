@@ -1,6 +1,21 @@
-import {type GuildMember} from 'discord.js';
+import {type DMChannel, type GuildMember, type Attachment} from 'discord.js';
 
-const generateMathChallenge = (): {question: string; answer: number} => {
+const numbersToAdd = [
+	'num_1.png',
+	'num_2.png',
+	'num_3.png',
+	'num_4.png',
+	'num_5.png',
+	'num_6.png',
+	'num_7.png',
+	'num_8.png',
+	'num_9.png',
+	'num_10.png',
+	'num_11.png',
+	'num_12.png',
+].map(i => `./src/assets/numbers/${i}`);
+
+const generateMathChallenge = (): {question: string; answer: number; a: number; b: number} => {
 	const a = Math.floor(Math.random() * 12) + 1;
 	const b = Math.floor(Math.random() * 12) + 1;
 	const ops = ['+'] as const;
@@ -21,22 +36,34 @@ const generateMathChallenge = (): {question: string; answer: number} => {
 	// 	}
 	// }
 
-	return {question, answer};
+	return {
+		question, answer, a, b,
+	};
 };
 
 const handleGuildMemberAdd = async (member: GuildMember) => {
 	console.log(`[JOIN]: ${member.toString()}`);
 
-	const {question, answer} = generateMathChallenge();
+	const {question, answer, a, b} = generateMathChallenge();
 	let channel: any;
 
 	try {
 		channel = await member.createDM();
+		/* Original question format:
 		await channel.send( // eslint-disable-line @typescript-eslint/no-unsafe-call, @stylistic/function-paren-newline
 			`Hello ${member.displayName}! Thanks for joining ${member.guild.name}.
 To verify your membership, please answer the following math problem within 5 minutes:
-${question}`);
-	} catch {
+${question}`); */
+		await (channel as DMChannel).send({
+			content: `Hello ${member.displayName}! Thanks for joining ${member.guild.name}.
+To verify your membership, please answer a math problem within 5 minutes. What is the sum (addition) of the two numbers contained in the images?`,
+			files: [
+				{attachment: numbersToAdd[a - 1]!, name: 'first_number.png'},
+				{attachment: numbersToAdd[b - 1]!, name: 'second_number.png'},
+			],
+		});
+	} catch (error) {
+		console.error(error);
 		const {systemChannel} = member.guild;
 		if (systemChannel) {
 			channel = systemChannel;
