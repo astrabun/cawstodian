@@ -22,20 +22,6 @@ const generateMathChallenge = (): {question: string; answer: number; a: number; 
 	const op = ops[Math.floor(Math.random() * ops.length)];
 	const question = `${a} ${op} ${b}`;
 	const answer = a + b;
-	// If other ops added in the future:
-	// let answer: number;
-	// switch (op) { // eslint-disable-line @typescript-eslint/switch-exhaustiveness-check
-	// 	case '+': {
-	// 		answer = a + b;
-	// 		break;
-	// 	}
-
-	// 	default: {
-	// 		answer = a + b;
-	// 		break;
-	// 	}
-	// }
-
 	return {
 		question, answer, a, b,
 	};
@@ -49,11 +35,6 @@ const handleGuildMemberAdd = async (member: GuildMember) => {
 
 	try {
 		channel = await member.createDM();
-		/* Original question format:
-		await channel.send( // eslint-disable-line @typescript-eslint/no-unsafe-call, @stylistic/function-paren-newline
-			`Hello ${member.displayName}! Thanks for joining ${member.guild.name}.
-To verify your membership, please answer the following math problem within 5 minutes:
-${question}`); */
 		await (channel as DMChannel).send({
 			content: `Hello ${member.displayName}! Thanks for joining ${member.guild.name}.
 To verify your membership, please answer a math problem within 5 minutes to avoid removal. What is the sum (addition) of the two numbers contained in the images?`,
@@ -110,7 +91,6 @@ To verify your membership, please answer a math problem within 5 minutes to avoi
 
 			try {
 				await member.kick('Failed verification: incorrect answer');
-				console.log(`[INCORRECT]: ${member.toString()}`);
 			} catch {}
 		}
 	});
@@ -124,7 +104,6 @@ To verify your membership, please answer a math problem within 5 minutes to avoi
 
 			try {
 				await member.kick('Failed verification: timeout');
-				console.log(`[TIMEOUT]: ${member.toString()}`);
 			} catch {}
 		}
 	});
