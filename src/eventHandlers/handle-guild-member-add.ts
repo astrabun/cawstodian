@@ -1,4 +1,5 @@
-import {type DMChannel, type GuildMember} from 'discord.js';
+import {type TextChannel, type DMChannel, type GuildMember} from 'discord.js';
+import {env} from '../env.js';
 
 const numbersToAdd = [
 	'num_1.png',
@@ -45,10 +46,15 @@ To verify your membership, please answer a math problem within 5 minutes to avoi
 		});
 	} catch (error) {
 		console.error(error);
-		const {systemChannel} = member.guild;
-		if (systemChannel) {
-			channel = systemChannel;
-			await systemChannel.send({
+		let overrideCouldNotDmChannel: TextChannel | undefined;
+		if (env.DISCORD_FAILED_TO_DM_CHANNEL_ID) {
+			overrideCouldNotDmChannel = (await member.client.channels.fetch(env.DISCORD_FAILED_TO_DM_CHANNEL_ID)) as TextChannel;
+		}
+
+		const couldNotDmChannel = overrideCouldNotDmChannel ?? member.guild.systemChannel;
+		if (couldNotDmChannel) {
+			channel = couldNotDmChannel;
+			await couldNotDmChannel.send({
 				content: `<@${member.id}>, I couldn't DM you. answer a math problem within 5 minutes to avoid removal. What is the sum (addition) of the two numbers contained in the images?`,
 				files: [
 					{attachment: numbersToAdd[a - 1]!, name: 'first_number.png'},
