@@ -88,6 +88,14 @@ To verify your membership, please answer a math problem within 5 minutes to avoi
 			try {
 				await channel.send('✅ Verification passed — welcome!'); // eslint-disable-line @typescript-eslint/no-unsafe-call
 				console.log(`[VERIFIED]: ${member.toString()}`);
+				if (env.DISCORD_VERIFIED_ROLE_NAME) {
+					try {
+						const verifiedRole = member.guild.roles.cache.find(role => role.name === env.DISCORD_VERIFIED_ROLE_NAME);
+						await member.roles.add(verifiedRole!);
+					} catch {
+						console.error(`Failed to add user to role: ${env.DISCORD_VERIFIED_ROLE_NAME}`);
+					}
+				}
 			} catch {}
 		} else {
 			try {
