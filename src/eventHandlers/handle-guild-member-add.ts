@@ -35,6 +35,10 @@ const handleGuildMemberAdd = async (member: GuildMember) => {
 	let channel: any;
 
 	try {
+		if (env.DISCORD_ALLOW_DM_USER === false) {
+			throw new Error('Skipping DM due to bot configuration; sending in welcome channel');
+		}
+
 		channel = await member.createDM();
 		await (channel as DMChannel).send({
 			content: `Hello ${member.displayName}! Thanks for joining ${member.guild.name}.
@@ -55,7 +59,8 @@ To verify your membership, please answer a math problem within 5 minutes to avoi
 		if (couldNotDmChannel) {
 			channel = couldNotDmChannel;
 			await couldNotDmChannel.send({
-				content: `<@${member.id}>, I couldn't DM you. answer a math problem within 5 minutes to avoid removal. What is the sum (addition) of the two numbers contained in the images?`,
+				content: `<@${member.id}>${env.DISCORD_ALLOW_DM_USER ? ', I couldn\'t DM you' : ''} -`
+					+ ' answer a math problem within 5 minutes to avoid removal. What is the sum (addition) of the two numbers contained in the images?',
 				files: [
 					{attachment: numbersToAdd[a - 1]!, name: 'first_number.png'},
 					{attachment: numbersToAdd[b - 1]!, name: 'second_number.png'},
