@@ -4,7 +4,7 @@ import {config as dotenvxConfig} from '@dotenvx/dotenvx';
 
 dotenvxConfig();
 
-const {DISCORD_CLIENT_ID, DISCORD_BOT_TOKEN, DISCORD_FAILED_TO_DM_CHANNEL_ID, DISCORD_VERIFIED_ROLE_NAME} = process.env;
+const {DISCORD_CLIENT_ID, DISCORD_BOT_TOKEN, DISCORD_FAILED_TO_DM_CHANNEL_ID, DISCORD_VERIFIED_ROLE_NAME, DISCORD_ALLOW_DM_USER = true} = process.env;
 
 if (!DISCORD_BOT_TOKEN || !DISCORD_CLIENT_ID) {
 	throw new Error('Missing environment variables');
@@ -15,4 +15,5 @@ export const env = {
 	DISCORD_BOT_TOKEN,
 	DISCORD_FAILED_TO_DM_CHANNEL_ID,
 	DISCORD_VERIFIED_ROLE_NAME,
+	DISCORD_ALLOW_DM_USER,
 };
