@@ -35,7 +35,7 @@ const handleGuildMemberAdd = async (member: GuildMember) => {
 	let channel: any;
 
 	try {
-		if (env.DISCORD_ALLOW_DM_USER === false) {
+		if (env.DISCORD_ALLOW_DM_USER !== true) {
 			throw new Error('Skipping DM due to bot configuration; sending in welcome channel');
 		}
 
