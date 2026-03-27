@@ -42,7 +42,7 @@ const handleGuildMemberAdd = async (member: GuildMember) => {
 		channel = await member.createDM();
 		await (channel as DMChannel).send({
 			content: `Hello ${member.displayName}! Thanks for joining ${member.guild.name}.
-To verify your membership, please answer a math problem within 5 minutes to avoid removal. What is the sum (addition) of the two numbers contained in the images?`,
+To verify your membership, please answer a math problem within 10 minutes to avoid removal. What is the sum (addition) of the two numbers contained in the images?`,
 			files: [
 				{attachment: numbersToAdd[a - 1]!, name: 'first_number.png'},
 				{attachment: numbersToAdd[b - 1]!, name: 'second_number.png'},
@@ -59,8 +59,8 @@ To verify your membership, please answer a math problem within 5 minutes to avoi
 		if (couldNotDmChannel) {
 			channel = couldNotDmChannel;
 			await couldNotDmChannel.send({
-				content: `<@${member.id}>${env.DISCORD_ALLOW_DM_USER ? ', I couldn\'t DM you' : ''} -`
-					+ ' answer a math problem within 5 minutes to avoid removal. What is the sum (addition) of the two numbers contained in the images?',
+				content: `<@${member.id}>${(env.DISCORD_ALLOW_DM_USER === true || env.DISCORD_ALLOW_DM_USER.toString().toLowerCase() === 'true') ? ', I couldn\'t DM you' : 'Welcome to the server'} -`
+					+ ' answer a math problem within 10 minutes to avoid removal. What is the sum (addition) of the two numbers contained in the images?',
 				files: [
 					{attachment: numbersToAdd[a - 1]!, name: 'first_number.png'},
 					{attachment: numbersToAdd[b - 1]!, name: 'second_number.png'},
@@ -76,8 +76,8 @@ To verify your membership, please answer a math problem within 5 minutes to avoi
 	}
 
 	const filter = (m: {author: {id: string}}) => m.author.id === member.id;
-	// Give members 5 minutes to answer (message told them 5 minutes).
-	const collector = channel.createMessageCollector({filter, time: 5 * 60 * 1000, max: 1}); // eslint-disable-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+	// Give members 5 minutes to answer (message told them 10 minutes).
+	const collector = channel.createMessageCollector({filter, time: 10 * 60 * 1000, max: 1}); // eslint-disable-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
 
 	let handled = false;
 	collector.on('collect', async (m: any) => { // eslint-disable-line @typescript-eslint/no-unsafe-call
